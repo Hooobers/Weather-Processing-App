@@ -1,5 +1,5 @@
 '''
-Name: 
+Name: Adam Huybers, Ana Sckaff Santos Lazaro, Hriday Bedi
 Program: Business Information Technology
 Course: ADEV-3005 Programming in Python
 Created: 2022-11-24
@@ -8,8 +8,7 @@ Updated: 2022-11-24
 TODO - Context manager for database connections.
 
 Final Project
- 
-@author Adam Huybers [ahuybers@academic.rrc.ca]
+
 @version 1.0.0
 '''
 import sqlite3

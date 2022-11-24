@@ -1,5 +1,5 @@
 '''
-Name: 
+Name: Adam Huybers, Ana Sckaff Santos Lazaro, Hriday Bedi
 Program: Business Information Technology
 Course: ADEV-3005 Programming in Python
 Created: 2022-11-20
@@ -8,8 +8,7 @@ Updated: 2022-11-24
 TODO - All database operations.
 
 Final Project
- 
-@author Adam Huybers [ahuybers@academic.rrc.ca]
+
 @version 1.0.3
 '''
 from dbcm import DBCM
@@ -34,7 +33,7 @@ class DBOperations():
                     last_date = last
 
                 # Command execution.    
-                cm_cursor.execute(f"select sample_date, avg_temp from samples where sample_date between '{first_date}' and '{last_date}' order by date(sample_date)")
+                cm_cursor.execute(f"select sample_date, min_temp, max_temp, avg_temp from weather where sample_date between '{first_date}' and '{last_date}' order by date(sample_date)")
                 return [dict(row) for row in cm_cursor.fetchall()]
 
         except Exception as e:
@@ -43,7 +42,7 @@ class DBOperations():
     def save_data(self, data, month, year):
         """Save data to the database."""
         try:
-            command = """insert into samples (sample_date, location, max_temp, min_temp, avg_temp)values (?,?,?,?,?)"""
+            command = """insert into weather (sample_date, location, min_temp, max_temp, avg_temp)values (?,?,?,?,?)"""
 
             for day, temps in data.items():
                 try:
@@ -59,6 +58,7 @@ class DBOperations():
 
                 except Exception as e:
                     print("Error saving data:", e)
+
         except Exception as e:
             print("Error saving data:", e)
 
@@ -67,7 +67,8 @@ class DBOperations():
         try:
             # Context manager used to handle connections.
             with DBCM(self.db) as cm_cursor:
-                cm_cursor.execute("""create table if not exists samples
+                # The database creates the table if it does not already exist.
+                cm_cursor.execute("""create table if not exists weather
                                  (id integer primary key autoincrement not null,
                                   sample_date text not null,
                                   location text not null,
@@ -83,7 +84,9 @@ class DBOperations():
         try:
             # Context manager used to handle connections.
             with DBCM(self.db) as cm_cursor:
-                cm_cursor.execute("delete from samples")
+                # All rows are deleted, but the table remains.
+                cm_cursor.execute("delete from weather")
             print("Data purged successfully.")
+
         except Exception as e:
             print("Error purging data:", e)
