@@ -15,7 +15,7 @@ from dbcm import DBCM
 
 
 class DBOperations():
-    """Database operations."""
+    """Database operations to handle CRUD functionality using a SQLite3 database."""
     def __init__(self, db):
         """Init function."""
         self.db = db
@@ -33,7 +33,7 @@ class DBOperations():
                     last_date = last
 
                 # Command execution.    
-                cm_cursor.execute(f"select sample_date, min_temp, max_temp, avg_temp from weather where sample_date between '{first_date}' and '{last_date}' order by date(sample_date)")
+                cm_cursor.execute(f"select sample_date, min_temp, max_temp, avg_temp from weather where sample_date between '{first_date}' and '{last_date}' order by sample_date")
                 return [dict(row) for row in cm_cursor.fetchall()]
 
         except Exception as e:
@@ -44,6 +44,7 @@ class DBOperations():
         try:
             command = """insert into weather (sample_date, location, min_temp, max_temp, avg_temp)values (?,?,?,?,?)"""
 
+            # Appends data to a list via looping.
             for day, temps in data.items():
                 try:
                     set_data = list()
@@ -54,7 +55,9 @@ class DBOperations():
                         set_data.append(value)
 
                     with DBCM(self.db) as cm_cursor:
+                        # Command execution.
                         cm_cursor.execute(command, set_data)
+                    print("Table saved successfully.")
 
                 except Exception as e:
                     print("Error saving data:", e)
@@ -76,6 +79,7 @@ class DBOperations():
                                   max_temp real not null,
                                   avg_temp real not null);""")
             print("Table created successfully.")
+
         except Exception as e:
             print("Error creating table:", e)
 
