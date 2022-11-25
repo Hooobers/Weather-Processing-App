@@ -4,14 +4,12 @@ Program: Business Information Technology
 Course: ADEV-3005 Programming in Python
 Created: 2022-11-22
 Updated: 2022-11-24
-
 TODO - All web scraping operations.
-
 Final Project
-
-@version 1.0.2
+@version 1.0.3
 '''
 from html.parser import HTMLParser
+import urllib.request
 
 
 class WeatherScraper(HTMLParser):
@@ -20,8 +18,8 @@ class WeatherScraper(HTMLParser):
   def __init__(self):
     """ Init function."""
     HTMLParser.__init__(self)
-    self.temperatures = dict()
     self.weather = dict()
+    self.temperatures = dict()
     self.stack = list()
     self.items = 0
     self.columns = 0
@@ -112,6 +110,15 @@ class WeatherScraper(HTMLParser):
             temp_weather = self.weather
             self.weather = dict()
             return temp_weather
-        
+
         except Exception as e:
             print("Error exoporting data:", e)
+
+
+output = WeatherScraper()
+
+with urllib.request.urlopen('https://climate.weather.gc.ca/climate_data/daily_data_e.html?StationID=27174&timeframe=2&StartYear=1840&EndYear=2018&Day=1&Year=1996&Month=5') as response:
+    html = str(response.read())
+
+output.feed(html)
+print(output.data_dump())
